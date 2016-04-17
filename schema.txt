@@ -1,0 +1,7 @@
+product(product_num primary key, product_name, product_description, product_ppu)
+
+customer(customer_id primary key, customer_company, customer_contact, customer_address, customer_city, customer_state, customer_zip, customer_phone, employee_id foreign key)
+
+employee(employee_id, employee_fname, employee_lname, employee_address, employee_state, employee_zip, employee_phone)
+
+orders(invoice_num primary key, product_id primary key and foreign key, customer_id foreign key, employee_id foreign key, quantity, order_date)
