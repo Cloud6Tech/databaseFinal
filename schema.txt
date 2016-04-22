@@ -1,7 +1,9 @@
-product(product_num primary key, product_name, product_description, product_ppu)
+PRODUCT(PRODUCT_NUM PRIMARY KEY INT, PRODUCT_NAME VARCHAR(25), PRODUCT_DESCRIPTION VARCHAR(100), PRODUCT_PPU FLOAT(100))
 
-customer(customer_id primary key, customer_company, customer_contact, customer_address, customer_city, customer_state, customer_zip, customer_phone, employee_id foreign key)
+CUSTOMER(CUSTOMER_ID PRIMARY KEY INT, CUSTOMER_COMPANY VARCHAR(25), CUSTOMER_CONTACT VARCHAR(25), CUSTOMER_ADDRESS VARCHAR(30), CUSTOMER_CITY VARCHAR(25), CUSTOMER_STATE CHAR(2), CUSTOMER_ZIP CHAR(5), CUSTOMER_PHONECHAR(10), EMPLOYEE_ID FOREIGN KEY INT)
 
-employee(employee_id, employee_fname, employee_lname, employee_address, employee_state, employee_zip, employee_phone)
+EMPLOYEE(EMPLOYEE_ID PRIMARY KEY INT, EMPLOYEE_FNAME VARCHAR(15), EMPLOYEE_LNAME VARCHAR(15), EMPLOYEE_ADDRESS VARCHAR(30), EMPLOYEE_STATE CHAR(2), EMPLOYEE_ZIP CHAR(5), EMPLOYEE_PHONE CHAR(10), EMPLOYEE_HIREDATE DATE)
 
-orders(invoice_num primary key, product_id primary key and foreign key, customer_id foreign key, employee_id foreign key, quantity, order_date)
+ORDERS(INVOICE_NUM PRIMARY KEY INT, CUSTOMER_ID FOREIGN KEY INT, ORDER_DATE DATE)
+
+INVOICE(INVOICE_NUM PRIMARY KEY FOREIGN KEY INT, PRODUCT_ID PRIMARY KEY FOREIGN KEY INT, QUANTITY INT)
