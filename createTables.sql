@@ -1,3 +1,4 @@
+DROP TABLE invoice;
 DROP TABLE orders;
 DROP TABLE customer;
 DROP TABLE employee;
@@ -108,22 +109,13 @@ END;
 
 CREATE TABLE orders(  	
 	invoice_num INT NOT NULL, 
-	product_id INT NOT NULL,
  	customer_id INT,
-    	employee_id INT,
-	quantity INT,
 	order_date DATE
 );
 
 ALTER TABLE orders ADD (
     CONSTRAINT orders_pk 
-	PRIMARY KEY (invoice_num, product_id)
-);
-
-ALTER TABLE orders ADD (
-    CONSTRAINT order_product_fk
-	FOREIGN KEY (product_id)
-	REFERENCES product(product_id)
+	PRIMARY KEY (invoice_num)
 );
 
 ALTER TABLE orders ADD (
@@ -132,8 +124,27 @@ ALTER TABLE orders ADD (
 	REFERENCES customer(customer_id)
 );
 
-ALTER TABLE orders ADD (
-    CONSTRAINT order_employee_fk
-	FOREIGN KEY (employee_id)
-	REFERENCES employee(employee_id)
+
+-- INVOICE table
+CREATE TABLE invoice(
+	invoice_num INT NOT NULL, 
+ 	product_id INT NOT NULL,
+	quantity INT
+);
+
+ALTER TABLE invoice ADD (
+    CONSTRAINT invoice_pk 
+	PRIMARY KEY (invoice_num,product_id)
+);
+
+ALTER TABLE invoice ADD (
+    CONSTRAINT invoice_invoice_fk
+	FOREIGN KEY (invoice_num)
+	REFERENCES orders(invoice_num)
+);
+
+ALTER TABLE invoice ADD (
+    CONSTRAINT invoice_product_fk
+	FOREIGN KEY (product_id)
+	REFERENCES product(product_id)
 );
