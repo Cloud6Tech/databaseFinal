@@ -55,6 +55,7 @@ group by invoice.invoice_num;
 prompt
 
 prompt ***** Employee Sales *****
+column "Total Sales" format $999,999.90
 select e.employee_lname "Last Name", e.employee_fname as "First Name", sum(t.summed) as "Total Sales"
 from customer c, employee e,
 (select o.customer_id as cust_id,sum(i.quantity * p.product_ppu) as summed
