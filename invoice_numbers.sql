@@ -1,47 +1,85 @@
-set echo on
+set echo off
+set verify off
+set heading on
+
 
 prompt ***** Total Sales by Product *****
-select product.product_name as "Product Name", sum(orders.quantity) as "Total Sale"
-from product, orders
-where product.product_id = orders.product_id
+select product.product_name as "Product Name", sum(invoice.quantity) as "Total Sale"
+from product, invoice
+where product.product_id = invoice.product_id
 group by product.product_name
-order by sum(orders.quantity) desc;
+order by product.product_name asc;
 
 prompt
 
 prompt ***** Lowest Selling Product *****
-select product_name, min(total) as "total"
+select p.product_name, t.summed as "Quantity"
+from product p,(
+select product_id, sum(quantity) as summed
+from invoice
+group by product_id
+having sum(quantity) = 
+(select min(summed)
 from
-(select product.product_name, sum(orders.quantity)  as total
-from product, orders
-where product.product_id = orders.product_id
-group by product.product_name) ;
+(select product_id, sum(quantity) as summed
+from invoice
+group by product_id))) t
+where p.product_id = t.product_id;
 
 prompt
 
+prompt ***** Highest Selling Product *****
+select p.product_name, t.summed as "Quantity"
+from product p,(
+select product_id, sum(quantity) as summed
+from invoice
+group by product_id
+having sum(quantity) = 
+(select max(summed)
+from
+(select product_id, sum(quantity) as summed
+from invoice
+group by product_id))) t
+where p.product_id = t.product_id;
+
+prompt
+
+
 prompt ***** Average Invoice Total *****
-select avg(sum(orders.quantity * product.product_ppu)) as "Average Sale"
-from  orders, product
-where orders.product_id = product.product_id
-group by orders.invoice_num;
+column "Average Sale" format $999,999.90
+select avg(sum(invoice.quantity * product.product_ppu)) as "Average Sale"
+from  invoice, product
+where invoice.product_id = product.product_id
+group by invoice.invoice_num;
 
 prompt
 
 prompt ***** Employee Sales *****
-select employee.employee_lname as "Last Name", employee.employee_fname as "First Name", sum(orders.quantity * product.product_ppu) as "Total Sales"
-from  orders, product, Employee
-where orders.product_id = product.product_id
-and employee.employee_id = orders.employee_id
-group by employee.employee_lname, employee.employee_fname
-order by employee.employee_lname;
+column "Total Sales" format $999,999.90
+select e.employee_lname "Last Name", e.employee_fname as "First Name", sum(t.summed) as "Total Sales"
+from customer c, employee e,
+(select o.customer_id as cust_id,sum(i.quantity * p.product_ppu) as summed
+from orders o, invoice i, product p
+where o.invoice_num = i.invoice_num
+and p.product_id = i.product_id
+group by o.customer_id) t
+where c.customer_id = t.cust_id
+and c.employee_id = e.employee_id
+group by e.employee_lname, e.employee_fname
+order by e.employee_lname, e.employee_fname;
 
 prompt
 
 prompt ***** Customers Over $250K in Total Orders  *****
-select customer.customer_company as "Company Name", sum(orders.quantity * product.product_ppu) as "Total Sales"
-from  orders, product, customer, employee
-where orders.product_id = product.product_id 
-and orders.customer_id = customer.customer_id
-group by customer.customer_company
-having sum(orders.quantity * product.product_ppu) > 250000
-order by customer.customer_company;
+ 
+column "Total Orders" format $999,999.90
+select c.customer_company as "Company Name", t.summed as "Total Orders"
+from customer c,
+(select o.customer_id as cust_id,sum(i.quantity * p.product_ppu) as summed
+from orders o, invoice i, product p
+where o.invoice_num = i.invoice_num
+and p.product_id = i.product_id
+group by customer_id
+having sum(i.quantity * p.product_ppu) > 100000) t
+where c.customer_id = t.cust_id
+order by c.customer_company;
