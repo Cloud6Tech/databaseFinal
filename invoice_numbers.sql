@@ -70,7 +70,7 @@ order by e.employee_lname, e.employee_fname;
 
 prompt
 
-prompt ***** Customers Over $250K in Total Orders  *****
+prompt ***** Customers Over $100K in Total Orders  *****
  
 column "Total Orders" format $999,999.90
 select c.customer_company as "Company Name", t.summed as "Total Orders"
