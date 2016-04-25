@@ -105,7 +105,8 @@ END;
 
 -- ORDERS table
 
-
+DROP SEQUENCE invoice_num_seq;
+CREATE SEQUENCE invoice_num_seq;
 
 CREATE TABLE orders(  	
 	invoice_num INT NOT NULL, 
@@ -123,6 +124,17 @@ ALTER TABLE orders ADD (
 	FOREIGN KEY (customer_id)
 	REFERENCES customer(customer_id)
 );
+
+CREATE OR REPLACE TRIGGER orders_bir
+BEFORE INSERT ON orders
+FOR EACH ROW
+
+BEGIN
+  SELECT invoice_num_seq.NEXTVAL
+  INTO :new.invoice_num
+  FROM dual;
+END;
+/
 
 
 -- INVOICE table
